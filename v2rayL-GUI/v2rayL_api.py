@@ -98,7 +98,9 @@ class V2rayL(object):
             self.subs.setconf(region, self.current_status.http, self.current_status.socks, self.current_status.proxy)
         try:
             output = subprocess.getoutput(["sudo systemctl status v2rayL.service"])
+            print(output)
             if "Active: active" in output:
+                print("Active: activate")
                 subprocess.call(["sudo systemctl restart v2rayL.service"], shell=True)
             else:
                 subprocess.call(["sudo systemctl start v2rayL.service"], shell=True)

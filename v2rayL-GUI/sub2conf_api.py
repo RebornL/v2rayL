@@ -50,16 +50,16 @@ class Sub2Conf(object):
         :return:
         """
         if prot == "vmess":
-            ret = json.loads(parse.unquote(base64.b64decode(b64str+"==").decode()).replace("\'", "\""))
+            ret = json.loads(parse.unquote(base64.b64decode(b64str + "==").decode()).replace("\'", "\""))
             region = ret['ps']
 
         elif prot == "shadowsocks":
             string = b64str.split("#")
             cf = string[0].split("@")
             if len(cf) == 1:
-                tmp = parse.unquote(base64.b64decode(cf[0]+"==").decode())
+                tmp = parse.unquote(base64.b64decode(cf[0] + "==").decode())
             else:
-                tmp = parse.unquote(base64.b64decode(cf[0]+"==").decode() + "@" + cf[1])
+                tmp = parse.unquote(base64.b64decode(cf[0] + "==").decode() + "@" + cf[1])
                 print(tmp)
             ret = {
                 "method": tmp.split(":")[0],
@@ -160,7 +160,8 @@ class Sub2Conf(object):
                                 "method": "GET",
                                 "path": [use_conf["path"]],
                                 "headers": {
-                                    "User-Agent": ["Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"],
+                                    "User-Agent": [
+                                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"],
                                     "Accept-Encoding": ["gzip, deflate"],
                                     "Connection": ["keep-alive"],
                                     "Pragma": "no-cache",
@@ -268,7 +269,7 @@ class Sub2Conf(object):
                 "inboundTag": [
                     "transparent"
                 ],
-                "port": 53,   # 劫持53端口UDP流量，使用V2Ray的DNS
+                "port": 53,  # 劫持53端口UDP流量，使用V2Ray的DNS
                 "network": "udp",
                 "outboundTag": "dns-out"
             })
@@ -307,8 +308,8 @@ class Sub2Conf(object):
                 conf["routing"]["rules"].append({
                     "type": "field",
                     "ip": [
-                       "geoip:private",
-                       "geoip:cn"
+                        "geoip:private",
+                        "geoip:cn"
                     ],
                     "outboundTag": "direct"
                 })
@@ -438,19 +439,18 @@ class Sub2Conf(object):
             tmp[k] = v
         tmp.pop("prot")
         if prot == "vmess":
-            return prot+"://"+base64.b64encode(str(tmp).encode()).decode()
+            return prot + "://" + base64.b64encode(str(tmp).encode()).decode()
         else:
             prot = "ss"
-            return prot+"://"+base64.b64encode("{}:{}@{}:{}".format(tmp["method"],
-                                                                       tmp["password"], tmp["add"],
-                                                                       tmp["port"]).encode()).decode()+"#"+region
+            return prot + "://" + base64.b64encode("{}:{}@{}:{}".format(tmp["method"],
+                                                                        tmp["password"], tmp["add"],
+                                                                        tmp["port"]).encode()).decode() + "#" + region
 
 
 # 异常
 class MyException(Exception):
     def __init__(self, *args):
         self.args = args
-
 
 # if __name__ == '__main__':
 #     # s = Sub2Conf("https://sub.qianglie.xyz/subscribe.php?sid=4594&token=TCDWnwMD0rGg")

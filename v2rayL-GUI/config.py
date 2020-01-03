@@ -76,7 +76,21 @@ conf_template = {
   "dns": {},
   "routing": {
       "domainStrategy": "IPOnDemand",
-      "rules": []
+      "rules": [
+          {
+            "type": "field",
+            "outboundTag": "direct",
+            "domain": ["geosite:cn"]
+          },
+          {
+            "type": "field",
+            "outboundTag": "direct",
+            "ip": [
+              "geoip:cn",
+              "geoip:private"
+            ]
+          }
+      ]
   },
   "stats": {}
 }

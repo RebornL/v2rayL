@@ -16,9 +16,11 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, qInfo, qInstallMessageHandler
 from PyQt5.QtGui import QPixmap
-from v2rayL_api import V2rayL, MyException
 import pyzbar.pyzbar as pyzbar
 from PIL import Image
+
+from v2rayL_api import V2rayL
+from sub2conf_api import MyException
 from v2rayL_threads import (
     ConnectThread,
     DisConnectThread,
@@ -763,6 +765,7 @@ class MyMainWindow(MainUi):
         lt = ["off", "whiteList", "gfwList"]
         self.v2rayL.proxy(types)
         qInfo("{}@$ff$@Proxy mode changed to: {}".format(self.v2rayL.current_status.log, lt[types]))
+        print("{}@$ff$@Proxy mode changed to: {}".format(self.v2rayL.current_status.log, lt[types]))
         if self.v2rayL.current_status.current != "未连接至VPN":
             self.v2rayL.connect(self.v2rayL.current_status.current, False)
 
@@ -778,4 +781,7 @@ if __name__ == "__main__":
     # 系统exit()方法确保应用程序干净的退出
     # 的exec_()方法有下划线。因为执行是一个Python关键词。因此，exec_()代替
     sys.exit(app.exec_())
-
+    """
+    打包指令（没有压缩）：
+    pyinstaller -F -w --i images/logo.png  v2rayLui.py
+    """
