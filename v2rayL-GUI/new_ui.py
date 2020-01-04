@@ -60,7 +60,7 @@ class SwitchBtn(QWidget):
                 self.startX = self.endX
                 self.timer.stop()
         else:
-            if self.startX  > self.endX:
+            if self.startX > self.endX:
                 self.startX = self.startX - self.step
             else:
                 self.startX = self.endX
@@ -262,8 +262,8 @@ class MainUi(QMainWindow):
                 border-top:1px solid white;
                 border-bottom:1px solid white;
                 border-left:1px solid white;
-                border-top-left-radius:10px;
-                border-bottom-left-radius:10px;
+                border-top-left-radius:5px;
+                border-bottom-left-radius:5px;
                 }
         ''')
 
@@ -275,8 +275,8 @@ class MainUi(QMainWindow):
                 border-top:1px solid darkGray;
                 border-bottom:1px solid darkGray;
                 border-right:1px solid darkGray;
-                border-top-right-radius:10px;
-                border-bottom-right-radius:10px;
+                border-top-right-radius:5px;
+                border-bottom-right-radius:5px;
             }
             QLabel#right_lable{
                 border:none;
@@ -1267,6 +1267,49 @@ class Ui_Add_Subs_Form(object):
         self.label.setText(_translate("dialog", "别名："))
         self.label_2.setText(_translate("dialog", "地址："))
         self.pushButton.setText(_translate("dialog", "添加"))
+
+class SystemTray(object):
+    # 程序托盘类
+    def __init__(self, w, app):
+        self.app = app
+        self.w = w
+        # self.w.show()  # 不设置显示则为启动最小化到托盘
+        self.initUI()
+        self.run()
+
+    def initUI(self):
+        self.tp = QSystemTrayIcon(self.w)
+        # 设置托盘图标
+        self.tp.setIcon(QIcon('/etc/v2rayL/images/logo.ico'))
+        # 托盘菜单选项
+        self.tp.setContextMenu(self.w.tpMenu)
+
+
+    def quitApp(self):
+        # 退出程序
+        self.w.show()  # w.hide() #设置退出时是否显示主窗口
+        re = QMessageBox.question(self.w, "提示", "确认退出？", QMessageBox.Yes |
+                                  QMessageBox.No, QMessageBox.No)
+        if re == QMessageBox.Yes:
+            self.tp.setVisible(False)  # 隐藏托盘控件
+            qApp.quit()  # 退出程序
+            self.w.v2rayL.disconnect()
+
+    def act(self, reason):
+        # 主界面显示方法
+        # 鼠标点击icon传递的信号会带有一个整形的值，1是表示单击右键，2是双击，3是单击左键，4是用鼠标中键点击
+        if reason == 2 or reason == 3:
+            self.w.show()
+
+    def run(self):
+        self.w.a2.triggered.connect(self.quitApp)
+        self.tp.show()  # 不调用show不会显示系统托盘消息，图标隐藏无法调用
+
+        # 绑定提醒信息点击事件
+        # self.tp.messageClicked.connect(self.message)
+        # 绑定托盘菜单点击事件
+        self.tp.activated.connect(self.act)
+        sys.exit(self.app.exec_())  # 持续对app的连接
 
 def main():
     app = QApplication(sys.argv)

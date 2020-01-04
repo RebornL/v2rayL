@@ -7,17 +7,16 @@ import random
 import base64
 import requests
 import subprocess
-import datetime
 import pickle
+from PIL import Image
+import pyzbar.pyzbar as pyzbar
 from PyQt5.QtWidgets import (
-    QApplication,
     QMessageBox,
     QFileDialog,
 )
-from PyQt5.QtCore import Qt, qInfo, qInstallMessageHandler
+from PyQt5.QtCore import Qt, qInfo
 from PyQt5.QtGui import QPixmap
-import pyzbar.pyzbar as pyzbar
-from PIL import Image
+
 
 from v2rayL_api import V2rayL
 from sub2conf_api import MyException
@@ -30,12 +29,11 @@ from v2rayL_threads import (
     VersionUpdateThread,
     RunCmdThread
 )
-from new_ui import MainUi, SwitchBtn, Ui_Add_Ss_Dialog, Ui_Add_Vmess_Dialog, Ui_Subs_Dialog
-from utils import SystemTray, qt_message_handler
+from new_ui import MainUi, SwitchBtn, SystemTray, Ui_Add_Ss_Dialog, Ui_Add_Vmess_Dialog, Ui_Subs_Dialog
 
 
 class MyMainWindow(MainUi):
-    def __init__(self, parent=None):
+    def __init__(self, app, parent=None):
         super(MyMainWindow, self).__init__(parent)
 
         self.init_ui()
@@ -162,7 +160,6 @@ class MyMainWindow(MainUi):
         # 设置最小化到托盘
         SystemTray(self, app)
 
-        # print("aaaaa")
 
     def check_update(self):
         """
@@ -768,20 +765,3 @@ class MyMainWindow(MainUi):
         print("{}@$ff$@Proxy mode changed to: {}".format(self.v2rayL.current_status.log, lt[types]))
         if self.v2rayL.current_status.current != "未连接至VPN":
             self.v2rayL.connect(self.v2rayL.current_status.current, False)
-
-
-if __name__ == "__main__":
-    import sys
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    qInstallMessageHandler(qt_message_handler)
-    app = QApplication(sys.argv)
-    myWin = MyMainWindow()
-    # 显示在屏幕上
-    myWin.show()
-    # 系统exit()方法确保应用程序干净的退出
-    # 的exec_()方法有下划线。因为执行是一个Python关键词。因此，exec_()代替
-    sys.exit(app.exec_())
-    """
-    打包指令（没有压缩）：
-    pyinstaller -F -w --i images/logo.png  v2rayLui.py
-    """
