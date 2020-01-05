@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QFileDialog,
 )
-from PyQt5.QtCore import Qt, qInfo
+from PyQt5.QtCore import qInfo
 from PyQt5.QtGui import QPixmap
 
 
@@ -27,7 +27,8 @@ from v2rayL_threads import (
     PingThread,
     CheckUpdateThread,
     VersionUpdateThread,
-    RunCmdThread
+    RunCmdThread,
+    UpdateV2rayThread
 )
 from new_ui import MainUi, SwitchBtn, SystemTray, Ui_Add_Ss_Dialog, Ui_Add_Vmess_Dialog, Ui_Subs_Dialog
 
@@ -48,6 +49,7 @@ class MyMainWindow(MainUi):
         # 更新线程
         self.update_addr_start = UpdateSubsThread()
         self.update_subs_start = UpdateSubsThread()
+        self.update_v2ray_start = UpdateV2rayThread()
 
         self.ping_start = PingThread()
         # 检查版本更新线程
@@ -127,6 +129,7 @@ class MyMainWindow(MainUi):
         self.system_setting_ui.switchBtn.checkedChanged.connect(self.change_check_update)
         # self.system_setting_ui.switchBtn1.checkedChanged.connect(self.auto_on)
         self.first_ui.pushButton.clicked.connect(lambda: self.update_subs(True))  # 更新订阅
+        self.first_ui.pushButton_v2ray.clicked.connect(lambda: self.update_v2ray(True))
         self.subs_add_child_ui.pushButton.clicked.connect(self.change_subs_addr)
         # self.subs_add_child_ui.textEdit.returnPressed.connect(self.change_subs_addr)
         self.config_setting_ui.pushButton_2.clicked.connect(self.output_conf)  # 导出配置文件
@@ -140,6 +143,7 @@ class MyMainWindow(MainUi):
         self.disconn_start.sinOut.connect(self.alert)  # 得到断开连接反馈
         self.update_addr_start.sinOut.connect(self.alert)  # 得到反馈
         self.update_subs_start.sinOut.connect(self.alert)   # 得到反馈
+        self.update_v2ray_start.sinOut.connect(self.alert)
         self.ping_start.sinOut.connect(self.alert)  # 得到反馈
         self.check_update_start.sinOut.connect(self.alert)
         self.version_update_start.sinOut.connect(self.alert)
@@ -166,7 +170,6 @@ class MyMainWindow(MainUi):
         检查版本更新
         :return:
         """
-        # print("hahah")
         shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL 正在检查版本更新."
         subprocess.call([shell], shell=True)
         self.check_update_start.start()
@@ -219,6 +222,16 @@ class MyMainWindow(MainUi):
             shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL 正在更新订阅......"
             subprocess.call([shell], shell=True)
         self.update_subs_start.start()
+
+    def update_v2ray(self, flag):
+        """
+        手动更新v2ray
+        :return:
+        """
+        if flag:
+            shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL 正在更新v2ray......"
+            subprocess.call([shell], shell=True)
+        self.update_v2ray_start.start()
 
     def get_conf_from_uri(self):
         """
@@ -365,6 +378,17 @@ class MyMainWindow(MainUi):
                 self.display_all_conf()
                 self.config_setting_ui.lineEdit.setText(";".join([x[1] for x in self.v2rayL.current_status.url]))
 
+            elif tp == "v2ray":
+                shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL v2ray更新完成"
+                subprocess.call([shell], shell=True)
+                if not ret[1]:
+                    qInfo("{}@$ff$@Successfully updated v2ray.".format(self.v2rayL.current_status.log))
+                else:
+                    retinfo = ""
+                    for i in ret[1]:
+                        retinfo += "\n{}-{}-{}".format(i[0][0], i[0][1], i[1])
+                    qInfo("{}@$ff$@{}".format(self.v2rayL.current_status.log, retinfo).encode())
+
             elif tp == "ping":
                 if isinstance(ret, int):
                     self.first_ui.time.setText(str(ret)+"ms")
@@ -422,6 +446,10 @@ class MyMainWindow(MainUi):
                 subprocess.call([shell], shell=True)
 
             elif tp == "vrud":
+                shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL {}".format(ret)
+                subprocess.call([shell], shell=True)
+
+            elif tp == "v2ray":
                 shell = "notify-send -i /etc/v2rayL/images/logo.ico v2rayL {}".format(ret)
                 subprocess.call([shell], shell=True)
 

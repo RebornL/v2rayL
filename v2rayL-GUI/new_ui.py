@@ -24,7 +24,7 @@ class SwitchBtn(QWidget):
         self.bgColorOff = QColor(169, 169, 169)
         self.bgColorOn = QColor(124, 252, 0)
 
-        self.sliderColorOff = QColor(245,245,245)
+        self.sliderColorOff = QColor(245, 245, 245)
         self.sliderColorOn = QColor(245, 245, 245)
 
         self.textColorOff = QColor(143, 143, 143)
@@ -718,6 +718,12 @@ class Ui_FirstPage(object):
         self.label_4.setGeometry(QRect(15, 30, 41, 21))
         self.label_4.setStyleSheet('font: 75 14pt;font-weight:bold;')
         self.label_4.setObjectName("label_4")
+        self.pushButton_v2ray = QPushButton(Form)
+        self.pushButton_v2ray.setGeometry(QRect(50, 400, 111, 31))
+        self.pushButton_v2ray.setStyleSheet(
+            "#pushButton_v2ray{border-width: 0px; border-radius: 15px; background: #1E90FF; outline: none;  color: white; font-size: 13px; }\n"
+            "#pushButton_v2ray:hover{ background: #5599FF;}")
+        self.pushButton_v2ray.setObjectName("pushButton_v2ray")
         self.pushButton = QPushButton(Form)
         self.pushButton.setGeometry(QRect(200, 400, 111, 31))
         self.pushButton.setStyleSheet(
@@ -828,6 +834,7 @@ class Ui_FirstPage(object):
         self.label_2.setText(_translate("Form", "地址"))
         self.label_3.setText(_translate("Form", "协议"))
         self.label_4.setText(_translate("Form", "序号"))
+        self.pushButton_v2ray.setText(_translate("Form", "更新v2ray"))
         self.pushButton.setText(_translate("Form", "更新订阅"))
         self.pushButton_1.setText(_translate("Form", "测试当前延时"))
 

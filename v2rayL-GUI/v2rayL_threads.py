@@ -97,6 +97,32 @@ class UpdateSubsThread(QThread):
                 else:
                     self.sinOut.emit(("update", "@@OK@@", (url, error), None))
 
+class UpdateV2rayThread(QThread):
+    """
+    更新订阅线程
+    """
+    sinOut = pyqtSignal(tuple)
+
+    def __init__(self, parent=None):
+        super(UpdateV2rayThread, self).__init__(parent)
+
+    def __del__(self):
+        # 线程状态改变与线程终止
+        self.wait()
+
+    def run(self):
+        shell = "chmod +x ./v2ray-core-update.sh"
+        subprocess.call([shell], shell=True)
+        output = subprocess.getoutput(["sudo ./v2ray-core-update.sh"])
+        print(output)
+        with open("/home/reborn/text.txt", "w") as f:
+            f.write(output)
+        if "is installed" in output:
+            print("v2ray更新成功")
+            self.sinOut.emit(("v2ray", "@@OK@@", "v2ray更新成功", None))
+        else:
+            print("更新失败请检查网络")
+            self.sinOut.emit(("v2ray", "@@Fail@@", "更新失败请检查网络", None))
 
 class PingThread(QThread):
     """
